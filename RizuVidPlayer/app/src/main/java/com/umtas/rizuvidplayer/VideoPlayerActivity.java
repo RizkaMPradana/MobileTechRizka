@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -50,16 +51,17 @@ public class VideoPlayerActivity extends AppCompatActivity {
         });
 
         videoNameTV.setText(videoName);
+
         backIB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VideoView.seekTo(VideoView.getDuration()-10000);
+               videoView.seekTo(videoView.getCurrentPosition()-10000);
             }
         });
         forwardIB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VideoView.seekTo(VideoView.getDuration()+10000);
+                videoView.seekTo(videoView.getCurrentPosition()+10000);
             }
         });
         playPauseIB.setOnClickListener(new View.OnClickListener() {
@@ -85,27 +87,88 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 }
             }
         });
+
+        setHandler();
+        initializeSeekBar();
+    }
+    private void setHandler(){
+        Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if(videoView.getDuration()>0){
+                    int curPos = videoView.getCurrentPosition();
+                    videoSeekBar.setProgress(curPos);
+                    videoTimeTV.setText(""+convertTime(videoView.getDuration()-curPos));
+                }
+                handler.postDelayed(this,0);
+            }
+        };
+        handler.postDelayed(runnable,500);
+    }
+
+    private String convertTime(int ms){
+        String time;
+        int x, detik,menit, jam;
+        x=ms/1000;
+        detik = x%60;
+        x /=60;
+        menit = x%60;
+        x /= 60;
+        jam = x %24;
+        if(jam!=0){
+            time = String.format("%02d",jam)+":"+String.format("%02d", menit)+":"+String.format("%02d", detik);
+        }else{
+            time = String.format("%02d",menit)+":"+String.format("%02d", detik);
+        }
+        return time;
+    }
+
+    private void initializeSeekBar(){
+    videoSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if(videoSeekBar.getId()==R.id.idSeekBarProgress){
+                if (fromUser){
+                    videoView.seekTo(progress);
+                    videoView.start();
+                    int curPos = videoView.getCurrentPosition();
+                    videoTimeTV.setText(""+convertTime(videoView.getDuration()-curPos));
+                }
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    });
     }
 
     private void showControls() {
         controlsRL.setVisibility(View.VISIBLE);
         final Window window = this.getWindow();
-        if(window==null){
+        if(window == null){
             return;
         }
         window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
         View decorView = window.getDecorView();
-        if(decorView!=null){
+        if(decorView != null){
             int uiOption = decorView.getSystemUiVisibility();
             if(Build.VERSION.SDK_INT>=14){
-                uiOption&= ~View.SYSTEM_UI_FLAG_LOW_PROFILE;
+                uiOption &= ~View.SYSTEM_UI_FLAG_LOW_PROFILE;
             }
             if(Build.VERSION.SDK_INT>=16){
-                uiOption&= ~View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+                uiOption &= ~View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
             }
             if(Build.VERSION.SDK_INT>=19){
-                uiOption&= ~View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+                uiOption &= ~View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             }
             decorView.setSystemUiVisibility(uiOption);
         }

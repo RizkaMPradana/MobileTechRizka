@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:id="@+id/idRLControls"
+    android:background="@color/black_shade_1"
     android:layout_height="match_parent">
 
     <TextView
@@ -20,10 +21,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:weightSum="3"
             android:orientation="horizontal">
 
             <ImageButton
-                android:layout_width="100dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="100dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
@@ -33,18 +36,20 @@
                 app:tint="@color/purple_700" />
 
             <ImageButton
-                android:layout_width="100dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="100dp"
                 android:id="@+id/idIBPlay"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_play"
+                android:src="@drawable/ic_pause"
                 app:tint="@color/purple_700" />
 
             <ImageButton
                 android:id="@+id/idIBForward"
-                android:layout_width="100dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="100dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"

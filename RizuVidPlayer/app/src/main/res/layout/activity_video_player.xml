@@ -16,10 +16,10 @@
         android:gravity="center">
 
         <VideoView
+            android:id="@+id/idVideoView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:keepScreenOn="true"
-            android:id="@+id/idVideoView"/>
+            android:keepScreenOn="true" />
     </RelativeLayout>
 
     <include layout="@layout/custom_controls"/>
